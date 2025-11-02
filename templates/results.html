@@ -3,23 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FutureScape: Results</title>
+  <title>FutureScape: Your Results</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div id="results-screen" class="screen active">
-    <h1>🌟 Your FutureScape</h1>
-    <div id="result-container">
-      <p id="result">Your estimated carbon footprint: <span id="carbon-value"></span> kg CO₂/year</p>
-      <div id="story"></div>
-      <ul id="tips"></ul>
-      <button id="back-btn">← Back</button>
-    </div>
-  </div>
+    <h1>Your Carbon Footprint Results</h1>
 
-  <script src="{{ url_for('static', filename='results.js') }}"></script>
+    <div id="result-container">
+      <p id="result">Your estimated carbon footprint is: <strong>{{ carbon_kg }} kg CO₂/year</strong></p>
+
+      <h2>Story from AI:</h2>
+      <p id="ai-story">{{ story }}</p>
+
+      {% if tips %}
+      <h3>Tips for Sustainability:</h3>
+      <ul>
+        {% for tip in tips %}
+          <li>{{ tip }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+
+    <a href="{{ url_for('quiz') }}" id="back-btn">← Back to Quiz</a>
+  </div>
 </body>
 </html>
