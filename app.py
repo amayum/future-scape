@@ -1,4 +1,15 @@
-# Add this helper function at the top of app.py
+import os
+from flask import Flask, render_template, request
+import openai
+
+app = Flask(__name__)
+
+# --- OpenAI setup ---
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+openai.api_key = OPENAI_API_KEY
+client = openai
+
+# --- mapping function ---
 def map_quiz_answers(form_data):
     """Map frontend quiz answers to backend expected values"""
     mapping = {
@@ -20,7 +31,14 @@ def map_quiz_answers(form_data):
             'short': '1-2 short flights',
             'long': '1-2 long flights',
             '3plus': '3+ flights'
-            }, 'home_efficiency': {
+        },
+        'home_energy_source': {
+            'renewable': 'Electricity from renewable sources',
+            'mixed': 'Electricity from mixed grid',
+            'gas_oil': 'Gas or oil heating',
+            'unsure': 'Unsure'
+        },
+        'home_efficiency': {
             'very': 'Very energy efficient',
             'some': 'Somewhat efficient',
             'not_very': 'Not very efficient',
@@ -55,232 +73,143 @@ def map_quiz_answers(form_data):
             'a_lot': 'A lot of food waste'
         }
     }
-        
-
     
     # Reverse mapping for display
     reverse_mapping = {}
     for field, options in mapping.items():
         for key, value in options.items():
             reverse_mapping[value] = key
-    
     return reverse_mapping
 
+# --- routes ---
 @app.route('/calculate', methods=['POST'])
 def calculate():
     try:
-        # Debug: Print received form data
-        print("Received form data:", request.form)
-        
-        # === 1. get form data from your 10 questions ===
-        meat_dairy = request.form.get('meat_dairy')
-        transport = request.form.get('transport') 
-        flights = request.form.get('flights')
-        home_energy_source = request.form.get('home_energy_source')
-        home_efficiency = request.form.get('home_efficiency')
-        recycling = request.form.get('recycling')
-        sustainable_shopping = request.form.get('sustainable_shopping')
-        carbon_awareness = request.form.get('carbon_awareness')
-        device_usage = request.form.get('device_usage')
-        food_waste = request.form.get('food_waste')
+        # --- 1. get form data ---
+        form_fields = [
+            'meat_dairy', 'transport', 'flights', 'home_energy_source',
+            'home_efficiency', 'recycling', 'sustainable_shopping',
+            'carbon_awareness', 'device_usage', 'food_waste'
+        ]
+        form_data = {field: request.form.get(field) for field in form_fields}
 
-        # Check if all required fields are present
-        required_fields = [meat_dairy, transport, flights, home_energy_source, 
-                          home_efficiency, recycling, sustainable_shopping, 
-                          carbon_awareness, device_usage, food_waste]
-        
-        if None in required_fields or "" in required_fields:
-            missing_fields = []
-            fields = ['meat_dairy', 'transport', 'flights', 'home_energy_source', 
-                     'home_efficiency', 'recycling', 'sustainable_shopping', 
-                     'carbon_awareness', 'device_usage', 'food_waste']
-            for i, field in enumerate(fields):
-                if not required_fields[i]:
-                    missing_fields.append(field)
-            
+        missing_fields = [k for k, v in form_data.items() if not v]
+        if missing_fields:
             return f"<h2>Missing fields: {', '.join(missing_fields)}</h2><a href='/quiz'>← Back to Quiz</a>", 400
 
+        # --- 2. calculate total carbon footprint ---
         total_carbon_kg = 0
-
-        # === 2. map answers to CO2 estimates (kg/year) ===
-        # Q1: meat & dairy spending → diet footprint
-        meat_co2 = {
-            "less_20": 1800,
-            "20_50": 2400,
-            "50_100": 3200,
-            "over_100": 4000
-        }
-        total_carbon_kg += meat_co2.get(meat_dairy, 3000)
-
-        # Q2: transport
-        transport_co2 = {
-            "car_petrol": 2500,
-            "car_electric": 800,
-            "public": 800,
-            "walk_cycle": 200,
-            "home": 300
-        }
-        total_carbon_kg += transport_co2.get(transport, 1000)
-
-        # Q3: flights
-        flight_co2 = {
-            "none": 0,
-            "short": 500,
-            "long": 2000,
-            "3plus": 3500
-        }
-        total_carbon_kg += flight_co2.get(flights, 0)
-
-        # Q4: home Energy Source
-        energy_source_co2 = {
-            "renewable": 500,
-            "mixed": 1200,
-            "gas_oil": 2200,
-            "unsure": 1500
-        }
-        base_home = energy_source_co2.get(home_energy_source, 1500)
-
-        # Q5: home Efficiency (adjust base)
-        efficiency_factor = {
-            "very": 0.7,
-            "some": 0.9,
-            "not_very": 1.2,
-            "not_sure": 1.0
-        }
-        total_carbon_kg += base_home * efficiency_factor.get(home_efficiency, 1.0)
-
-        # Q6: recycling (reduces footprint by up to 20%)
-        recycling_savings = {
-            "always": 0.85,
-            "often": 0.9,
-            "sometimes": 0.95,
-            "rarely": 1.0
-        }
-        total_carbon_kg *= recycling_savings.get(recycling, 1.0)
-
-        # Q7: sustainable Shopping (small reduction)
-        if sustainable_shopping == "most":
+        # Meat & dairy
+        meat_co2 = {"less_20": 1800, "20_50": 2400, "50_100": 3200, "over_100": 4000}
+        total_carbon_kg += meat_co2.get(form_data['meat_dairy'], 3000)
+        # Transport
+        transport_co2 = {"car_petrol": 2500, "car_electric": 800, "public": 800, "walk_cycle": 200, "home": 300}
+        total_carbon_kg += transport_co2.get(form_data['transport'], 1000)
+        # Flights
+        flight_co2 = {"none": 0, "short": 500, "long": 2000, "3plus": 3500}
+        total_carbon_kg += flight_co2.get(form_data['flights'], 0)
+        # Home energy
+        energy_source_co2 = {"renewable": 500, "mixed": 1200, "gas_oil": 2200, "unsure": 1500}
+        base_home = energy_source_co2.get(form_data['home_energy_source'], 1500)
+        efficiency_factor = {"very": 0.7, "some": 0.9, "not_very": 1.2, "not_sure": 1.0}
+        total_carbon_kg += base_home * efficiency_factor.get(form_data['home_efficiency'], 1.0)
+        # Recycling
+        recycling_savings = {"always": 0.85, "often": 0.9, "sometimes": 0.95, "rarely": 1.0}
+        total_carbon_kg *= recycling_savings.get(form_data['recycling'], 1.0)
+        # Sustainable shopping
+        if form_data['sustainable_shopping'] == "most":
             total_carbon_kg *= 0.9
-        elif sustainable_shopping == "occasionally":
+        elif form_data['sustainable_shopping'] == "occasionally":
             total_carbon_kg *= 0.95
-
-        # Q9: device Usage → Electricity
-        device_hours_to_kwh = {
-            "less_2": 300,
-            "2_5": 600,
-            "5_8": 1000,
-            "8plus": 1500
-        }
-        device_kwh = device_hours_to_kwh.get(device_usage, 800)
+        # Device usage
+        device_hours_to_kwh = {"less_2": 300, "2_5": 600, "5_8": 1000, "8plus": 1500}
+        device_kwh = device_hours_to_kwh.get(form_data['device_usage'], 800)
         total_carbon_kg += device_kwh * 0.233
+        # Food waste
+        food_waste_co2 = {"almost_none": 100, "a_little": 300, "some": 600, "a_lot": 1000}
+        total_carbon_kg += food_waste_co2.get(form_data['food_waste'], 500)
 
-        # Q10: Food Waste
-        food_waste_co2 = {
-            "almost_none": 100,
-            "a_little": 300,
-            "some": 600,
-            "a_lot": 1000
-        }
-        total_carbon_kg += food_waste_co2.get(food_waste, 500)
-
-        # round final value
         carbon_display = round(total_carbon_kg, 1)
 
-        # === build rich context for the AI ===
+        # --- 3. build lifestyle summary ---
         lifestyle_context = []
 
-        # diet
-        if meat_dairy == "less_20":
+        # Map behavior descriptions
+        if form_data['meat_dairy'] == "less_20":
             lifestyle_context.append("follows a mostly plant-based diet")
-        elif meat_dairy == "over_100":
+        elif form_data['meat_dairy'] == "over_100":
             lifestyle_context.append("consumes large amounts of meat and dairy")
-
-        # transport
-        if transport == "walk_cycle":
+        if form_data['transport'] == "walk_cycle":
             lifestyle_context.append("walks or cycles daily")
-        elif transport == "car_petrol":
+        elif form_data['transport'] == "car_petrol":
             lifestyle_context.append("relies heavily on petrol cars")
-        elif transport == "public":
+        elif form_data['transport'] == "public":
             lifestyle_context.append("uses public transport regularly")
-
-        # flights
-        if flights == "3plus":
+        if form_data['flights'] == "3plus":
             lifestyle_context.append("flies frequently for travel")
-        elif flights == "none":
+        elif form_data['flights'] == "none":
             lifestyle_context.append("never flies")
-
-        # home energy
-        if home_energy_source == "renewable":
+        if form_data['home_energy_source'] == "renewable":
             lifestyle_context.append("powers their home with renewable energy")
-        elif home_energy_source == "gas_oil":
+        elif form_data['home_energy_source'] == "gas_oil":
             lifestyle_context.append("heats their home with fossil fuels")
-
-        # waste & consumption
-        if food_waste == "a_lot":
+        if form_data['food_waste'] == "a_lot":
             lifestyle_context.append("wastes significant amounts of food")
-        elif food_waste == "almost_none":
+        elif form_data['food_waste'] == "almost_none":
             lifestyle_context.append("minimizes food waste")
-
-        if recycling == "always":
+        if form_data['recycling'] == "always":
             lifestyle_context.append("recycles diligently")
-        elif recycling == "rarely":
+        elif form_data['recycling'] == "rarely":
             lifestyle_context.append("rarely recycles")
-
-        if sustainable_shopping == "most":
+        if form_data['sustainable_shopping'] == "most":
             lifestyle_context.append("buys second-hand and sustainable goods")
 
-        # combine into a natural sentence
-        if lifestyle_context:
-            behavior_summary = "; ".join(lifestyle_context)
-        else:
-            behavior_summary = "lives an average modern lifestyle"
+        behavior_summary = "; ".join(lifestyle_context) if lifestyle_context else "lives an average modern lifestyle"
 
-        # === AI prompt ===
+        # --- 4. AI prompt ---
         prompt = f"""
-        You are a climate storyteller in the year 2050. Imagine a world where every person on Earth lived exactly like a specific individual whose lifestyle is described below.
+        You are a climate storyteller in the year 2050. Imagine a world where everyone lived like this person:
 
-        This person: {behavior_summary}.
+        {behavior_summary}.
 
-        Based on this collective behavior, describe the state of the planet in 2050 in 120–150 words. Include vivid details about:
-        - Climate and weather patterns
-        - Cities and infrastructure  
-        - Nature, oceans, and wildlife
-        - Daily human life and society
-
-        Be poetic but grounded in climate science. End with 2 specific, hopeful bullet pointed actions people could take today to create a better future.
+        Describe the world in 2050 (120–150 words). Include climate, cities, nature, wildlife, daily life.
+        Then end with 2 bullet-pointed actionable tips for sustainability today.
         """
 
-        print(f"Generating AI story for: {behavior_summary}")
-        
-        # Check if OpenAI API key is available
+        # --- 5. generate story ---
+        story = ""
+        tips = []
+
         if not OPENAI_API_KEY:
-            # Fallback story if OpenAI is not configured
-            story = f"""In 2050, the world shaped by lifestyles like yours presents a mixed picture. {behavior_summary}. 
-
-The climate shows both challenges and opportunities. While some regions face intensified weather patterns, global cooperation has led to innovative solutions in renewable energy and sustainable agriculture.
-
-Cities have transformed with green infrastructure, vertical gardens, and efficient public transport systems. Nature shows remarkable resilience where conservation efforts have been prioritized.
-
-• Transition to renewable energy sources for home and transport
-• Support local, sustainable food systems and reduce waste
-
-The future remains unwritten - your choices today shape tomorrow's world."""
+            # fallback story
+            story = f"In 2050, the world shaped by lifestyles like yours presents a mixed picture. {behavior_summary}."
+            tips = [
+                "Transition to renewable energy sources for home and transport",
+                "Support local, sustainable food systems and reduce waste"
+            ]
         else:
             try:
                 chat_completion = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompt}],
-                    max_tokens=250,
+                    max_tokens=300,
                     temperature=0.8
                 )
-                story = chat_completion.choices[0].message.content.strip()
-                print("AI story generated successfully")
+                story_full = chat_completion.choices[0].message.content.strip()
+                # Split tips from story
+                if "•" in story_full:
+                    parts = story_full.split("•")
+                    story = parts[0].strip()
+                    tips = ["•" + tip.strip() for tip in parts[1:]]
+                else:
+                    story = story_full
+                    tips = []
             except Exception as e:
                 print(f"OpenAI API error: {e}")
                 story = "Unable to generate story at this time. Please try again later."
+                tips = []
 
-        # === 4. render result ===
-        return render_template('results.html', carbon_kg=carbon_display, story=story)
+        return render_template('results.html', carbon_kg=carbon_display, story=story, tips=tips)
 
     except Exception as e:
         print(f"Error in calculate route: {e}")
@@ -291,7 +220,7 @@ The future remains unwritten - your choices today shape tomorrow's world."""
         <a href='/quiz'>← Back to Quiz</a>
         """, 500
 
-# Add a test route to check if the app is working
+# --- test route ---
 @app.route('/test')
 def test():
     return "Flask app is working!"

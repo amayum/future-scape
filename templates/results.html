@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FutureScape </title>
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com/" />
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div id="results-screen" class="screen active fade-in">
+    <div class="headers-container">
+      <h1 class="main-title">Results for your FutureScape</h1>
+      <h2 class="subtitle">
+        A vision of the world shaped by your lifestyle choices.
+      </h2>
+    </div>
+
+    <div class="results-box">
+      <h3>Your Estimated Annual Carbon Footprint</h3>
+      <p id="carbon-value" class="carbon-number">{{ carbon_kg }} kg CO₂</p>
+      <p id="impact-level" class="impact-text"></p>
+    </div>
+
+    <div class="story-box story-section">
+      <h3>A Vision of your Future</h3>
+      <div class="story-content">{{ story }}</div>
+    </div>
+
+    <div id="tips-section" class="tips-box hidden">
+      <h3>💡 Here's how you can make the world better! </h3>
+      <ul id="tips-list"></ul>
+    </div>
+
+    <div class="button-container">
+      <a href="/quiz" class="start-button">🔄 Retake Quiz</a>
+    </div>
+
+
+
+  <script src="results.js"></script>
+</body>
+</html>
