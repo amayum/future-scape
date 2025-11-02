@@ -3,18 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Results</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>FutureScape: Results</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <div id="results-screen" class="screen">
-    <h1>Results</h1>
+  <div id="results-screen" class="screen active">
+    <h1>🌟 Your FutureScape</h1>
     <div id="result-container">
-      <div id="result">Your personalized results will appear here.</div>
-      <a href="index.html" id="back-btn" class="start-button">Back to Home</a>
+      <p id="result">Your estimated carbon footprint: <span id="carbon-value"></span> kg CO₂/year</p>
+      <div id="story"></div>
+      <ul id="tips"></ul>
+      <button id="back-btn">← Back</button>
     </div>
   </div>
 
-  <script src="results.js"></script>
+  <script src="{{ url_for('static', filename='results.js') }}"></script>
 </body>
 </html>

@@ -1,49 +1,26 @@
-const questions = [
-  {
-    question: "How often do you eat meat or dairy?",
-    options: ["Less than £20", "£20-£50", "£50-£100", "Over £100"]
-  },
-  {
-    question: "How do you usually travel?",
-    options: ["Car", "Public transport", "Walk or cycle", "Work from home"]
-  }
-];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FutureScape: Quiz</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="quiz-screen" class="screen active">
+    <h1>🌿 Quiz</h1>
+    <div id="quiz">
+      <div id="question" class="question"></div>
+      <div id="options" class="options"></div>
+      <div class="nav-buttons">
+        <button id="back-btn" style="display: none">← Back</button>
+      </div>
+    </div>
+  </div>
 
-let currentQuestion = 0;
-
-const questionEl = document.getElementById("question");
-const optionsEl = document.getElementById("options");
-const backBtn = document.getElementById("back-btn");
-
-function loadQuestion() {
-  const q = questions[currentQuestion];
-  questionEl.textContent = q.question;
-  optionsEl.innerHTML = "";
-
-  q.options.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.textContent = opt;
-    btn.classList.add("option");
-    btn.onclick = () => {
-      btn.classList.add("selected");
-      if(currentQuestion < questions.length - 1){
-        currentQuestion++;
-        loadQuestion();
-      } else {
-        window.location.href = "results.html";
-      }
-    }
-    optionsEl.appendChild(btn);
-  });
-
-  backBtn.style.display = currentQuestion === 0 ? "none" : "inline-block";
-}
-
-backBtn.addEventListener("click", () => {
-  if(currentQuestion > 0){
-    currentQuestion--;
-    loadQuestion();
-  }
-});
-
-loadQuestion();
+  <script src="{{ url_for('static', filename='quiz.js') }}"></script>
+</body>
+</html>

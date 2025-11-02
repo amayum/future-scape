@@ -3,19 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quiz</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>FutureScape: Results</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <div id="quiz-screen" class="screen">
-    <h1>🌿 Quiz</h1>
-    <div id="question" class="question"></div>
-    <div id="options" class="options"></div>
-    <div class="nav-buttons">
+  <div id="results-screen" class="screen active">
+    <h1>🌟 Your FutureScape</h1>
+    <div id="result-container">
+      <p id="result">Your estimated carbon footprint: <span id="carbon-value"></span> kg CO₂/year</p>
+      <div id="story"></div>
+      <ul id="tips"></ul>
       <button id="back-btn">← Back</button>
     </div>
   </div>
 
-  <script src="quiz.js"></script>
+  <script src="{{ url_for('static', filename='results.js') }}"></script>
 </body>
 </html>
