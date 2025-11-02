@@ -44,7 +44,7 @@ body::before {
 
 /* ===== SCREENS ===== */
 .screen {
-  display: none;
+  display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
@@ -52,10 +52,6 @@ body::before {
   padding: 20px;
   min-height: 100vh;
   justify-content: center;
-}
-
-.screen.active {
-  display: flex;
 }
 
 /* ===== HEADERS CONTAINER ===== */
@@ -74,4 +70,322 @@ body::before {
   color: #4b0082;
   margin: 0 0 10px 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-  letter-spacing: 
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  font-size: 25px;
+  font-weight: 300;
+  color: #4b0082;
+  margin: 0;
+  padding-top: 90px;
+  opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+
+/* ===== CRYSTAL BALL CONTAINER ===== */
+.crystal-container {
+  position: relative;
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 80px auto 0;
+}
+
+.gradient-orb {
+  position: absolute;
+  width: 100%;
+  max-width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 250, 205, 0.6) 30%,
+    rgba(255, 215, 0, 0.4) 70%,
+    rgba(255, 182, 193, 0.2) 100%
+  );
+  animation: pulseOrb 3s infinite alternate;
+  z-index: 1;
+}
+
+@keyframes pulseOrb {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+    filter: brightness(1);
+  }
+  100% {
+    transform: scale(1.05);
+    opacity: 0.9;
+    filter: brightness(1.2);
+  }
+}
+
+/* ===== CRYSTAL BALL IMAGE ===== */
+.crystal-image {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 100%;
+  object-fit: cover;
+  position: relative;
+  z-index: 2;
+  box-shadow: none;
+  animation: none;
+  filter: none;
+}
+
+/* ===== BUTTONS ===== */
+.start-button,
+#back-btn {
+  background-color: #ae8cdd;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 15px 30px;
+  font-family: "League Spartan", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  display: inline-block;
+  min-width: 200px;
+  text-align: center;
+}
+
+.start-button:hover,
+#back-btn:hover {
+  background-color: #9b7bc9;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.start-button:active,
+#back-btn:active {
+  transform: scale(0.98);
+}
+
+#back-btn {
+  background-color: #4b0082;
+  font-size: 1rem;
+  padding: 10px 20px;
+  min-width: auto;
+  margin-top: 20px;
+}
+
+/* ===== QUIZ STYLES ===== */
+#quiz-screen h1 {
+  font-size: 2.5rem;
+  color: #4b0082;
+  margin-bottom: 30px;
+}
+
+.question {
+  font-size: 1.4rem;
+  margin-bottom: 30px;
+  font-weight: 600;
+  color: #003344;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.option {
+  padding: 15px 20px;
+  background: linear-gradient(135deg, #fffacd, #ffd700);
+  border: 2px solid #4b0082;
+  border-radius: 25px;
+  color: #003344;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+}
+
+.option:hover {
+  background: linear-gradient(135deg, #ffd700, #fffacd);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(75, 0, 130, 0.3);
+}
+
+.nav-buttons {
+  margin-top: 20px;
+}
+
+/* ===== RESULTS STYLES ===== */
+#results-screen h1 {
+  font-size: 2.5rem;
+  color: #4b0082;
+  margin-bottom: 30px;
+}
+
+#result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+#result {
+  font-size: 1.8rem;
+  max-width: 600px;
+}
+
+#result p {
+  margin: 10px 0;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .headers-container {
+    top: 10px;
+    padding: 15px;
+  }
+
+  .main-title {
+    font-size: 2.2rem;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+  }
+
+  .crystal-container {
+    margin-top: 100px;
+  }
+
+  .crystal-image {
+    width: 85%;
+  }
+
+  .gradient-orb {
+    width: 85%;
+    height: 340px;
+    max-width: 340px;
+  }
+
+  .start-button {
+    font-size: 1.3rem;
+    padding: 12px 25px;
+    min-width: 180px;
+  }
+
+  #quiz-screen h1,
+  #results-screen h1 {
+    font-size: 2rem;
+  }
+
+  .question {
+    font-size: 1.2rem;
+  }
+  
+  #result {
+    font-size: 1.5rem;
+  }
+}
+
+/* ===== QUIZ SCREEN STYLES  ===== */
+
+#quiz-screen {
+  padding-top: 20px;
+}
+
+#quiz-screen h1 {
+  font-size: 2.5rem;
+  color: #4b0082;
+  margin-bottom: 30px;
+}
+
+.question {
+  font-size: 1.4rem;
+  margin-bottom: 30px;
+  font-weight: 600;
+  color: #003344;
+  max-width: 600px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.option {
+  padding: 15px 20px;
+  background: linear-gradient(135deg, #fffacd, #ffd700);
+  border: 2px solid #4b0082;
+  border-radius: 25px;
+  color: #003344;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+  text-align: left;
+  padding-left: 24px;
+}
+
+.option:hover {
+  background: linear-gradient(135deg, #ffd700, #fffacd);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(75, 0, 130, 0.3);
+}
+
+.option.selected {
+  background: linear-gradient(135deg, #c8f7c5, #a0e7a0);
+  border-color: #2e8b57;
+  box-shadow: 0 4px 10px rgba(46, 139, 87, 0.3);
+}
+
+.nav-buttons {
+  margin-top: 25px;
+}
+
+#back-btn {
+  padding: 10px 20px;
+  background: #4b0082;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+#back-btn:hover {
+  background: #5d00a0;
+  transform: translateY(-2px);
+}
+
+/* responsive adjustments for quiz */
+@media (max-width: 768px) {
+  #quiz-screen h1 {
+    font-size: 2rem;
+  }
+
+  .question {
+    font-size: 1.2rem;
+    padding: 0 10px;
+  }
+
+  .option {
+    font-size: 0.95rem;
+    padding: 14px 18px;
+  }
+}
