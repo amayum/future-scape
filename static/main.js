@@ -1,14 +1,17 @@
-// get DOM elements
-const startBtn = document.getElementById("start-btn");
-const homeScreen = document.getElementById("home-screen");
+// Wait until DOM is loaded
+document.addEventListener("DOMContentLoaded", () => {
+  const startBtn = document.getElementById("start-btn");
+  const homeScreen = document.getElementById("home-screen");
 
-// add click listener to Start Quiz button
-startBtn.addEventListener("click", () => {
-  // play fade-out animation
-  homeScreen.classList.add("fade-out");
+  if (startBtn) {
+    startBtn.addEventListener("click", () => {
+      // Add fade-out animation class
+      homeScreen.classList.add("fade-out");
 
-  // after animation completes, redirect to quiz page
-  setTimeout(() => {
-    window.location.href = "/quiz";
-  }, 800); 
+      // Redirect after animation
+      setTimeout(() => {
+        window.location.href = "quiz.html";
+      }, 800);
+    });
+  }
 });
