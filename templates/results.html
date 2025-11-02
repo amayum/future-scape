@@ -3,27 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FutureScape: Results</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <title>Results</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="results-screen" class="screen">
-    <h1>Your Carbon Footprint</h1>
+    <h1>Results</h1>
     <div id="result-container">
-      <div id="result">
-        <p>Total Carbon Footprint: {{ carbon_kg }} kg CO₂</p>
-        <p>{{ story }}</p>
-        {% if tips %}
-          <h3>Tips for Sustainability:</h3>
-          <ul>
-            {% for tip in tips %}
-              <li>{{ tip }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-      </div>
-      <a href="{{ url_for('quiz') }}" id="back-btn">← Back to Quiz</a>
+      <div id="result">Your personalized results will appear here.</div>
+      <a href="index.html" id="back-btn" class="start-button">Back to Home</a>
     </div>
   </div>
+
+  <script src="results.js"></script>
 </body>
 </html>
