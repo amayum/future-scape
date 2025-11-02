@@ -1,0 +1,77 @@
+/* ===== BODY & BACKGROUND ===== */
+body {
+  font-family: "Poppins", sans-serif;
+  background: radial-gradient(circle at center, #ffde59 0%, #ff914d 100%);
+  color: #003344;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  text-align: center;
+  position: relative;
+}
+
+/* Enhanced mystical pulse effect */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 250, 205, 0.3),
+    rgba(255, 215, 0, 0.1)
+  );
+  animation: pulseBg 4s infinite alternate;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes pulseBg {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+/* ===== SCREENS ===== */
+.screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 20px;
+  min-height: 100vh;
+  justify-content: center;
+}
+
+.screen.active {
+  display: flex;
+}
+
+/* ===== HEADERS CONTAINER ===== */
+.headers-container {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 20px;
+}
+
+.main-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #4b0082;
+  margin: 0 0 10px 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: 
