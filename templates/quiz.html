@@ -4,28 +4,247 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FutureScape Quiz</title>
-  <!-- Flask static CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <!-- Quiz Screen -->
   <div id="quiz-screen" class="screen active">
-    <h1>🌿 Quiz</h1>
-    <form id="quiz-form">
-      <!-- Questions will be rendered by quiz.js -->
-      <div id="quiz-container"></div>
+    <div class="headers-container">
+      <h1 class="main-title">Your Lifestyle Quiz</h1>
+      <h2 class="subtitle">Answer these questions to see your future impact</h2>
+    </div>
 
-      <div class="nav-buttons">
-        <button type="button" id="back-btn" style="display: none;">← Back</button>
-        <button type="submit" id="submit-btn">Submit</button>
+    <form id="carbon-quiz" method="POST" action="/calculate">
+      <!-- Question 1: Diet -->
+      <div class="question-container">
+        <div class="question">How much meat and dairy do you typically consume?</div>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="meat_dairy" value="less_20" required>
+            Mostly plant-based (less than 20%)
+          </label>
+          <label class="option">
+            <input type="radio" name="meat_dairy" value="20_50">
+            Moderate (20-50%)
+          </label>
+          <label class="option">
+            <input type="radio" name="meat_dairy" value="50_100">
+            Significant (50-100%)
+          </label>
+          <label class="option">
+            <input type="radio" name="meat_dairy" value="over_100">
+            Heavy meat/dairy consumption
+          </label>
+        </div>
       </div>
+
+      <!-- Question 2: Transport -->
+      <div class="question-container">
+        <div class="question">What's your primary mode of transportation?</div>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="transport" value="car_petrol" required>
+            Petrol car
+          </label>
+          <label class="option">
+            <input type="radio" name="transport" value="car_electric">
+            Electric car
+          </label>
+          <label class="option">
+            <input type="radio" name="transport" value="public">
+            Public transport
+          </label>
+          <label class="option">
+            <input type="radio" name="transport" value="walk_cycle">
+            Walk/cycle
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 3: Flights -->
+      <div class="question-container">
+        <div class="question">How often do you fly?</div>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="flights" value="none" required>
+            Never
+          </label>
+          <label class="option">
+            <input type="radio" name="flights" value="short">
+            Short flights (1-2 per year)
+          </label>
+          <label class="option">
+            <input type="radio" name="flights" value="long">
+            Long flights (1-2 per year)
+          </label>
+          <label class="option">
+            <input type="radio" name="flights" value="3plus">
+            3+ flights per year
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 4: Home Energy -->
+      <div class="question-container">
+        <div class="question">What is your home's main energy source?</div>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="home_energy_source" value="renewable" required>
+            Renewable energy
+          </label>
+          <label class="option">
+            <input type="radio" name="home_energy_source" value="mixed">
+            Mixed sources
+          </label>
+          <label class="option">
+            <input type="radio" name="home_energy_source" value="gas_oil">
+            Gas/oil
+          </label>
+          <label class="option">
+            <input type="radio" name="home_energy_source" value="unsure">
+            Unsure
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 5: Home Efficiency -->
+      <div class="question-container">
+        <div class="question">How energy efficient is your home?</div>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="home_efficiency" value="very" required>
+            Very efficient
+          </label>
+          <label class="option">
+            <input type="radio" name="home_efficiency" value="some">
+            Somewhat efficient
+          </label>
+          <label class="option">
+            <input type="radio" name="home_efficiency" value="not_very">
+            Not very efficient
+          </label>
+          <label class="option">
+            <input type="radio" name="home_efficiency" value="not_sure">
+            Not sure
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 6: Recycling -->
+      <div class="question-container">
+        <div class="question">How often do you recycle?</div>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="recycling" value="always" required>
+            Always
+          </label>
+          <label class="option">
+            <input type="radio" name="recycling" value="often">
+            Often
+          </label>
+          <label class="option">
+            <input type="radio" name="recycling" value="sometimes">
+            Sometimes
+          </label>
+          <label class="option">
+            <input type="radio" name="recycling" value="rarely">
+            Rarely
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 7: Sustainable Shopping -->
+      <div class="question-container">
+        <div class="question">How often do you buy sustainable/second-hand products?</div>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="sustainable_shopping" value="most" required>
+            Most of the time
+          </label>
+          <label class="option">
+            <input type="radio" name="sustainable_shopping" value="occasionally">
+            Occasionally
+          </label>
+          <label class="option">
+            <input type="radio" name="sustainable_shopping" value="rarely">
+            Rarely
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 8: Device Usage -->
+      <div class="question-container">
+        <div class="question">How many hours per day do you use electronic devices?</div>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="device_usage" value="less_2" required>
+            Less than 2 hours
+          </label>
+          <label class="option">
+            <input type="radio" name="device_usage" value="2_5">
+            2-5 hours
+          </label>
+          <label class="option">
+            <input type="radio" name="device_usage" value="5_8">
+            5-8 hours
+          </label>
+          <label class="option">
+            <input type="radio" name="device_usage" value="8plus">
+            8+ hours
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 9: Food Waste -->
+      <div class="question-container">
+        <div class="question">How much food do you typically waste?</div>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="food_waste" value="almost_none" required>
+            Almost none
+          </label>
+          <label class="option">
+            <input type="radio" name="food_waste" value="a_little">
+            A little
+          </label>
+          <label class="option">
+            <input type="radio" name="food_waste" value="some">
+            Some
+          </label>
+          <label class="option">
+            <input type="radio" name="food_waste" value="a_lot">
+            A lot
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 10: Carbon Awareness -->
+<div class="question-container">
+    <div class="question">How aware are you of your carbon footprint?</div>
+    <div class="options">
+        <label class="option">
+            <input type="radio" name="carbon_awareness" value="very" required>
+            Very aware
+        </label>
+        <label class="option">
+            <input type="radio" name="carbon_awareness" value="somewhat">
+            Somewhat aware
+        </label>
+        <label class="option">
+            <input type="radio" name="carbon_awareness" value="not_very">
+            Not very aware
+        </label>
+    </div>
+</div>
+
+      <button type="submit" class="start-button">See My Future</button>
     </form>
+
+    <a href="/" id="back-btn" style="margin-top: 20px;">← Back to Home</a>
   </div>
 
-  <!-- Flask static JS -->
-  <script src="{{ url_for('static', filename='quiz.js') }}"></script>
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>

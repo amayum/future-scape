@@ -19,12 +19,44 @@
     </div>
 
     <div class="crystal-container">
-      <div class="gradient-orb"></div>
-      <img src="{{ url_for('static', filename='images/crystal-ball.png') }}" alt="Crystal Ball" class="crystal-image" />
+      <!-- Test with a different image approach -->
+      <div class="crystal-ball-wrapper">
+        <div class="gradient-orb"></div>
+        <img 
+          src="{{ url_for('static', filename='crystal-ball.png') }}" 
+          alt="Crystal Ball" 
+          class="crystal-image"
+          onerror="this.style.display='none'; console.log('Image failed to load')"
+        />
+      </div>
+      
+      <!-- Fallback if image doesn't load -->
+      <div class="fallback-crystal" style="display: none;">
+        <div class="crystal-placeholder"></div>
+      </div>
+      
       <a id="start-btn" class="start-button">Start Quiz</a>
     </div>
   </div>
 
   <script src="{{ url_for('static', filename='main.js') }}"></script>
+  
+  <script>
+    // Debug image loading
+    window.addEventListener('load', function() {
+      const img = document.querySelector('.crystal-image');
+      console.log('Image source:', img.src);
+      
+      img.onload = function() {
+        console.log('Image loaded successfully');
+      };
+      
+      img.onerror = function() {
+        console.log('Image failed to load');
+        // Show fallback
+        document.querySelector('.fallback-crystal').style.display = 'block';
+      };
+    });
+  </script>
 </body>
 </html>
